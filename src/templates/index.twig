@@ -1,0 +1,40 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Commerce V12Finance plugin for Craft CMS 3.x
+ *
+ * Commerce V12Finance index.twig
+ *
+ * @author    Kurious Agency
+ * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://kurious.agency
+ * @package   CommerceV12finance
+ * @since     1.0.0
+ */
+#}
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("kuriousagency\\v12finance\\assetbundles\\commerce\\v12finance\\V12financeAsset") %}
+{% do view.registerAssetBundle("kuriousagency\\V12finance\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
+
+{% set docsUrl = "https://github.com/KuriousAgency/commerce-v12-finance/blob/master/README.md" %}
+
+{% set title = "Commerce V12Finance" %}
+
+{% set pluginCpUrl = url('commerce-v12-finance') %}
+
+{% set iconUrl = view.getAssetManager().getPublishedUrl('@kuriousagency/v12finance/assetbundles/indexcpsection/dist', true) ~ '/img/Index-icon.svg' %}
+
+{% set extraPageHeaderHtml %}
+    <div class="buttons">
+        <a href="{{ pluginCpUrl }}" class="btn submit add icon">{{ "Click Me!"|t('commerce-v12-finance') }}</a>
+    </div>
+{% endset %}
+
+{% set content %}
+    <h2>{{ "Index CP Section body goes here"|t('commerce-v12-finance') }}</h2>
+    <img src="{{ iconUrl }}" height="64" width="64" />
+    <p class="textline"></p>
+{% endset %}
