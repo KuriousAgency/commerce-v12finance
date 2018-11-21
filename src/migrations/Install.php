@@ -41,8 +41,8 @@ class Install extends Migration
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
         if ($this->createTables()) {
-            $this->createIndexes();
-            $this->addForeignKeys();
+            // $this->createIndexes();
+            // $this->addForeignKeys();
             // Refresh the db schema caches
             Craft::$app->db->schema->refresh();
             $this->insertDefaultData();
@@ -65,25 +65,28 @@ class Install extends Migration
     // Protected Methods
     // =========================================================================
 
-    /**
-     * @return bool
-     */
+    // /**
+    //  * @return bool
+    //  */
     protected function createTables()
     {
         $tablesCreated = false;
 
-        $tableSchema = Craft::$app->db->schema->getTableSchema('{{%commercev12finance_commercev12financerecord}}');
+        $tableSchema = Craft::$app->db->schema->getTableSchema('{{%v12finance}}');
         if ($tableSchema === null) {
             $tablesCreated = true;
             $this->createTable(
-                '{{%commercev12finance_commercev12financerecord}}',
+                '{{%v12finance}}',
                 [
-                    'id' => $this->primaryKey(),
+					'id' => $this->primaryKey(),
+					'v12ProductId' => $this->integer()->notNull(),
+                    'enabled' => $this->boolean()->defaultValue(false),
+                    'enabledForSaleItems' => $this->boolean()->defaultValue(false),
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
                     'uid' => $this->uid(),
-                    'siteId' => $this->integer()->notNull(),
-                    'some_field' => $this->string(255)->notNull()->defaultValue(''),
+                    // 'siteId' => $this->integer()->notNull(),
+                    
                 ]
             );
         }
@@ -94,42 +97,42 @@ class Install extends Migration
     /**
      * @return void
      */
-    protected function createIndexes()
-    {
-        $this->createIndex(
-            $this->db->getIndexName(
-                '{{%commercev12finance_commercev12financerecord}}',
-                'some_field',
-                true
-            ),
-            '{{%commercev12finance_commercev12financerecord}}',
-            'some_field',
-            true
-        );
-        // Additional commands depending on the db driver
-        switch ($this->driver) {
-            case DbConfig::DRIVER_MYSQL:
-                break;
-            case DbConfig::DRIVER_PGSQL:
-                break;
-        }
-    }
+    // protected function createIndexes()
+    // {
+    //     $this->createIndex(
+    //         $this->db->getIndexName(
+    //             '{{%v12finance}}',
+    //             'some_field',
+    //             true
+    //         ),
+    //         '{{%v12finance}}',
+    //         'some_field',
+    //         true
+    //     );
+    //     // Additional commands depending on the db driver
+    //     switch ($this->driver) {
+    //         case DbConfig::DRIVER_MYSQL:
+    //             break;
+    //         case DbConfig::DRIVER_PGSQL:
+    //             break;
+    //     }
+    // }
 
-    /**
-     * @return void
-     */
-    protected function addForeignKeys()
-    {
-        $this->addForeignKey(
-            $this->db->getForeignKeyName('{{%commercev12finance_commercev12financerecord}}', 'siteId'),
-            '{{%commercev12finance_commercev12financerecord}}',
-            'siteId',
-            '{{%sites}}',
-            'id',
-            'CASCADE',
-            'CASCADE'
-        );
-    }
+    // /**
+    //  * @return void
+    //  */
+    // protected function addForeignKeys()
+    // {
+    //     $this->addForeignKey(
+    //         $this->db->getForeignKeyName('{{%v12finance}}', 'siteId'),
+    //         '{{%v12finance}}',
+    //         'siteId',
+    //         '{{%sites}}',
+    //         'id',
+    //         'CASCADE',
+    //         'CASCADE'
+    //     );
+    // }
 
     /**
      * @return void
@@ -143,6 +146,6 @@ class Install extends Migration
      */
     protected function removeTables()
     {
-        $this->dropTableIfExists('{{%commercev12finance_commercev12financerecord}}');
+        $this->dropTableIfExists('{{%v12finance}}');
     }
 }

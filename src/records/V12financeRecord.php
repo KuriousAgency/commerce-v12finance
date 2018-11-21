@@ -30,6 +30,6 @@ class V12financeRecord extends ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%commercev12finance_commercev12financerecord}}';
+        return '{{%v12finance}}';
     }
 }

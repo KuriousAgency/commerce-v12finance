@@ -28,7 +28,13 @@ class V12financeModel extends Model
     /**
      * @var string
      */
-    public $someAttribute = 'Some Default';
+	public $id;
+	
+	public $v12ProductId;
+
+	public $enabled;
+
+	public $enabledForSaleItems;
 
     // Public Methods
     // =========================================================================
@@ -39,8 +45,7 @@ class V12financeModel extends Model
     public function rules()
     {
         return [
-            ['someAttribute', 'string'],
-            ['someAttribute', 'default', 'value' => 'Some Default'],
+            [['v12ProductId','enabled','enabledForSaleItems'], 'required'],
         ];
     }
 }
