@@ -13,27 +13,24 @@ namespace kuriousagency\commerce\v12finance\variables;
 use kuriousagency\commerce\v12finance\V12finance;
 
 use Craft;
+use yii\base\Behavior;
+use yii\di\ServiceLocator;
 
 /**
  * @author    Kurious Agency
  * @package   CommerceV12finance
  * @since     1.0.0
  */
-class V12financeVariable
+class V12financeVariable extends ServiceLocator
 {
     // Public Methods
     // =========================================================================
 
-    /**
-     * @param null $optional
-     * @return string
-     */
-    public function exampleVariable($optional = null)
+    public function __construct($config = [])
     {
-        $result = "And away we go to the Twig template...";
-        if ($optional) {
-            $result = "I'm feeling optional today...";
-        }
-        return $result;
+		$components = V12finance::$plugin->components;
+		unset($components['migrator']);
+        $config['components'] = $components;
+        parent::__construct($config);
     }
 }

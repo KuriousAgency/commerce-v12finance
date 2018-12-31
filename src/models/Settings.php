@@ -28,7 +28,13 @@ class Settings extends Model
     /**
      * @var string
      */
-    public $someAttribute = 'Some Default';
+	public $authKey;
+	
+	public $guid;
+
+	public $id;
+
+	public $data;
 
     // Public Methods
     // =========================================================================
@@ -39,8 +45,7 @@ class Settings extends Model
     public function rules()
     {
         return [
-            ['someAttribute', 'string'],
-            ['someAttribute', 'default', 'value' => 'Some Default'],
+            [['authKey','guid','id'], 'required'],
         ];
     }
 }

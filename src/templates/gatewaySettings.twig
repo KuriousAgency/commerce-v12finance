@@ -1,0 +1,92 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Commerce Braintree plugin for Craft CMS 3.x
+ *
+ * Commerce Braintree Settings.twig
+ *
+ * @author    Kurious Agency
+ * @copyright Copyright (c) 2018 Kurious Agency
+ * @link      https://kurious.agency
+ * @package   CommerceBraintree
+ * @since     1.0.0
+ */
+#}
+
+{% from "_includes/forms" import textField, lightswitchField %}
+
+{{ textField({
+    label: 'Auth Key'|t('commerce'),
+    id: 'authKey',
+    class: 'ltr',
+    name: 'authKey',
+    value: gateway.authKey,
+    errors: gateway.getErrors('authKey')
+}) }}
+
+{{ textField({
+    label: 'Retailer GUID'|t('commerce'),
+    id: 'retailerGuid',
+    class: 'ltr',
+    name: 'retailerGuid',
+    value: gateway.retailerGuid,
+    errors: gateway.getErrors('retailerGuid')
+}) }}
+
+{{ textField({
+    label: 'Retailer ID'|t('commerce'),
+    id: 'retailerId',
+    class: 'ltr',
+    name: 'retailerId',
+    value: gateway.retailerId,
+    errors: gateway.getErrors('retailerId')
+}) }}
+
+
+ {{ lightswitchField({
+     label: "Test mode?"|t('commerce'),
+     name: 'testMode',
+     on: gateway.testMode,
+     errors: gateway.getErrors('testMode'),
+ }) }}
+
+<hr>
+
+	<div class="tableview">
+		<table class="data fullwidth">
+			<thead>
+			<tr>
+				<th scope="col" data-attribute="name">{{ "Name"|t }}</th>
+				<th scope="col" data-attribute="months">{{ "Months"|t }}</th>
+				<th scope="col" data-attribute="apr">{{ "APR"|t }}</th>
+				<th scope="col" data-attribute="enabled">{{ "Enabled"|t }}</th>
+				<th scope="col" data-attribute="saleEnabled">{{ "Enabled for Sale Items"|t }}</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for product in gateway.getAllProducts() %}
+				<tr>
+					<td><strong>{{ product.Name }}</strong></td>
+					<td>{{ product.Months }}</td>
+					<td>{{ product.APR }}</td>
+					<td>
+						{{ lightswitchField({
+							id: product.ProductId,
+							on: product.enabled,
+							name: 'data['~product.ProductId~'][enabled]',
+							small: true
+						}) }}
+					</td>
+					<td>
+						{{ lightswitchField({
+							id: product.ProductId,
+							on: product.saleItems,
+							name: 'data['~product.ProductId~'][saleItems]',
+							small: true
+						}) }}
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>

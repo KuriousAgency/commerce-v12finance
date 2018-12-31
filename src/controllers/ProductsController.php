@@ -14,13 +14,14 @@ use kuriousagency\commerce\v12finance\V12finance;
 
 use Craft;
 use craft\web\Controller;
+use yii\web\Response;
 
 /**
  * @author    Kurious Agency
  * @package   CommerceV12finance
  * @since     1.0.0
  */
-class DefaultController extends Controller
+class ProductsController extends Controller
 {
 
     // Protected Properties
@@ -31,7 +32,7 @@ class DefaultController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = ['index', 'do-something'];
+    protected $allowAnonymous = [];
 
     // Public Methods
     // =========================================================================
@@ -41,18 +42,9 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        $result = 'Welcome to the DefaultController actionIndex() method';
+		$variables = [];
+		Craft::dd('here');
 
-        return $result;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function actionDoSomething()
-    {
-        $result = 'Welcome to the DefaultController actionDoSomething() method';
-
-        return $result;
+        return $this->renderTemplate('v12finance/index', $variables);
     }
 }
