@@ -11,20 +11,27 @@
 namespace kuriousagency\commerce\v12finance\services;
 
 use kuriousagency\commerce\v12finance\V12finance;
-use kuriousagency\commerce\v12finance\models\v12FinanceModel;
+use kuriousagency\commerce\v12finance\models\V12financeModel;
+use kuriousagency\commerce\v12finance\records\V12financeRecord;
 
 use Craft;
 use craft\base\Component;
+use craft\db\Query;
+use craft\db\Command;
+use yii\base\Exception;
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 
 /**
  * @author    Kurious Agency
  * @package   CommerceV12finance
  * @since     1.0.0
  */
-class V12financeService extends Component
+class ProductsService extends Component
 {
    
-
+	private $apiUrl = 'https://apply.v12finance.com/latest/retailerapi/';
 	private $client;
     private $retailer;
     
@@ -32,7 +39,7 @@ class V12financeService extends Component
 	{
 		parent::init();
 		
-		$this->client = new Client([
+		/*$this->client = new Client([
 		    'base_uri' => craft()->config->get('apiUrl', 'v12finance'),
 	    ]);
 	    
@@ -41,7 +48,7 @@ class V12financeService extends Component
 		    'AuthenticationKey' => $settings->authKey,
 		    'RetailerGuid' => $settings->guid,
 		    'RetailerId' => $settings->id,
-	    ];
+	    ];*/
 	}
     
     /**
@@ -152,11 +159,27 @@ class V12financeService extends Component
     
     private function request($endpoint, $data)
     {
-	    $response = $this->client->request('POST', $endpoint, [
+		$client = new Client(['base_uri'=>$this->apiUrl]);
+
+		Craft::dd($data);
+
+		try {
+			$response = $client->request('POST', $endpoint, [
+				'headers' => ['Accept' => 'application/json'],
+				'json' => $data,
+			]);
+			Craft::dd(json_decode($response->getBody()));
+
+			return json_decode($response->getBody());
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+		
+		/*$response = $this->client->request('POST', $endpoint, [
 		    'json' => $data,
 	    ]);
 	    
-	    return json_decode((string) $response->getBody());
+	    return json_decode((string) $response->getBody());*/
     }
     
     
@@ -257,7 +280,7 @@ class V12financeService extends Component
 		    }
 	    }
 	    
-	    $model = new v12FinanceModel();
+	    $model = new V12financeModel();
 	    $model->v12ProductId = $financeProduct->ProductId;
 	    
 	    if($this->saveProduct($model)){
@@ -281,24 +304,36 @@ class V12financeService extends Component
     
     public function getAllProducts($criteria = [])
     {
-        $results = V12FinanceRecord::model()->findAll($criteria);
+		$rows = $this->_createQuery()
+            ->where($criteria)
+            ->all();
+		
+		$results = [];
+		foreach ($rows as $row)
+		{
+			$results[] = new V12financeModel($row);
+		}
 
-        return V12FinanceModel::populateModels($results);
+		return $results;
+
+		//$results = V12financeRecord::findAll($criteria);
+
+        //return V12financeModel::populateModels($results);
     }
     
     public function getProductsByAttributes($attributes)
     {
-        $results = V12FinanceRecord::model()->findAllByAttributes($attributes);
+        $results = V12financeRecord::model()->findAllByAttributes($attributes);
 
-        return V12FinanceModel::populateModels($results);
+        return V12financeModel::populateModels($results);
     }
     
     public function getProductById($id)
     {
-        $result = V12FinanceRecord::model()->findById($id);
+        $result = V12financeRecord::model()->findById($id);
 
         if ($result) {
-            return V12FinanceModel::populateModel($result);
+            return V12financeModel::populateModel($result);
         }
 
         return null;
@@ -307,14 +342,14 @@ class V12financeService extends Component
     public function saveProduct(V12FinanceModel $model)
     {
         if ($model->id) {
-            $record = V12FinanceRecord::model()->findById($model->id);
+            $record = V12financeRecord::model()->findById($model->id);
 
             if (!$record) {
                 throw new Exception(Craft::t('No v12 product exists with the ID “{id}”',
                     ['id' => $model->id]));
             }
         } else {
-            $record = new v12FinanceRecord();
+            $record = new v12financeRecord();
         }
 
         $fields = [
@@ -345,7 +380,24 @@ class V12financeService extends Component
     
     public function deleteProductById($id)
     {
-        V12FinanceRecord::model()->deleteByPk($id);
-    }
+        V12financeRecord::model()->deleteByPk($id);
+	}
+	
+
+
+	private function _createQuery(): query
+	{
+		return (new Query())
+            ->select([
+                'v12finance.id',
+                'v12finance.v12ProductId',
+                'v12finance.enabled',
+                'v12finance.enabledForSaleItems',
+                'v12finance.dateCreated',
+				'v12finance.dateUpdated',
+				'v12finance.uid',
+            ])
+            ->from(['{{%v12finance}} v12finance']);
+	}
 
 }

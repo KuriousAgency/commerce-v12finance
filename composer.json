@@ -1,43 +1,43 @@
 {
-    "name": "kuriousagency/commerce-v12finance",
-    "description": "V12 Finance plugin for Craft Commerce",
-    "type": "craft-plugin",
-    "version": "1.0.0",
-    "keywords": [
-        "craft",
-        "cms",
-        "craftcms",
-        "craft-plugin",
-        "commerce v12finance"
-    ],
-    "support": {
-        "docs": "https://github.com/KuriousAgency/commerce-v12finance/blob/master/README.md",
-        "issues": "https://github.com/KuriousAgency/commerce-v12finance/issues"
-    },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Kurious Agency",
-            "homepage": "https://kurious.agency"
-        }
-    ],
-    "require": {
-        "craftcms/cms": "^3.0.0-RC1"
-    },
-    "autoload": {
-        "psr-4": {
-          "kuriousagency\\commerce\\v12finance\\": "src/"
-        }
-    },
-    "extra": {
-        "name": "Commerce V12Finance",
-        "handle": "commerce-v12finance",
-        "hasCpSettings": true,
-        "hasCpSection": true,
-        "changelogUrl": "https://raw.githubusercontent.com/KuriousAgency/commerce-v12finance/master/CHANGELOG.md",
-        "components": {
-            "v12financeService": "kuriousagency\\commerce\\v12finance\\services\\V12financeService"
-        },
-        "class": "kuriousagency\\commerce\\v12finance\\V12finance"
-    }
+	"name": "kuriousagency/commerce-v12finance",
+	"description": "V12 Finance plugin for Craft Commerce",
+	"type": "craft-plugin",
+	"version": "2.0.0",
+	"keywords": [
+		"craft",
+		"cms",
+		"craftcms",
+		"craft-plugin",
+		"commerce v12finance"
+	],
+	"support": {
+		"docs": "https://github.com/KuriousAgency/commerce-v12finance/blob/master/README.md",
+		"issues": "https://github.com/KuriousAgency/commerce-v12finance/issues"
+	},
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Kurious Agency",
+			"homepage": "https://kurious.agency"
+		}
+	],
+	"require": {
+		"craftcms/cms": "^3.0.0-RC1"
+	},
+	"autoload": {
+		"psr-4": {
+			"kuriousagency\\commerce\\v12finance\\": "src/"
+		}
+	},
+	"extra": {
+		"name": "Commerce V12Finance",
+		"handle": "v12finance",
+		"hasCpSettings": false,
+		"hasCpSection": false,
+		"changelogUrl": "https://raw.githubusercontent.com/KuriousAgency/commerce-v12finance/master/CHANGELOG.md",
+		"components": {
+			"v12financeService": "kuriousagency\\commerce\\v12finance\\services\\V12financeService"
+		},
+		"class": "kuriousagency\\commerce\\v12finance\\V12finance"
+	}
 }

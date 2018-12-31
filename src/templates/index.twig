@@ -16,25 +16,68 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
-{% do view.registerAssetBundle("kuriousagency\\v12finance\\assetbundles\\commerce\\v12finance\\V12financeAsset") %}
-{% do view.registerAssetBundle("kuriousagency\\V12finance\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
-
-{% set docsUrl = "https://github.com/KuriousAgency/commerce-v12-finance/blob/master/README.md" %}
-
-{% set title = "Commerce V12Finance" %}
-
-{% set pluginCpUrl = url('commerce-v12-finance') %}
-
-{% set iconUrl = view.getAssetManager().getPublishedUrl('@kuriousagency/v12finance/assetbundles/indexcpsection/dist', true) ~ '/img/Index-icon.svg' %}
-
-{% set extraPageHeaderHtml %}
-    <div class="buttons">
-        <a href="{{ pluginCpUrl }}" class="btn submit add icon">{{ "Click Me!"|t('commerce-v12-finance') }}</a>
-    </div>
-{% endset %}
+{% set title = "V12 Finance Products" %}
 
 {% set content %}
-    <h2>{{ "Index CP Section body goes here"|t('commerce-v12-finance') }}</h2>
-    <img src="{{ iconUrl }}" height="64" width="64" />
-    <p class="textline"></p>
+    <div class="tableview">
+		<table class="data fullwidth">
+			<thead>
+			<tr>
+				<th scope="col" data-attribute="name">{{ "Name"|t }}</th>
+				<th scope="col" data-attribute="months">{{ "Months"|t }}</th>
+				<th scope="col" data-attribute="apr">{{ "APR"|t }}</th>
+				<th scope="col" data-attribute="enabled">{{ "Enabled"|t }}</th>
+				<th scope="col" data-attribute="saleEnabled">{{ "Enabled for Sale Items"|t }}</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for product in craft.V12finance.products.getProductsList() %}
+				<tr>
+					<td><strong>{{ product.Name }}</strong></td>
+					<td>{{ product.Months }}</td>
+					<td>{{ product.APR }}</td>
+					<td>
+						{{ forms.lightswitchField({
+							id: product.id,
+							on: product.enabled,
+							name: 'enabled',
+							small: true
+						}) }}
+					</td>
+					<td>
+						{{ forms.lightswitchField({
+							id: product.id,
+							on: product.enabledForSaleItems,
+							name: 'enabledForSaleItems',
+							small: true
+						}) }}
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
 {% endset %}
+{% js %}
+
+    $(document).ready(function() {
+      $('.lightswitch').change(function() {
+
+	  	var $input = $(this).find('input[type="hidden"]'),
+	  		name = $input.attr('name'),
+	  		value = $input.val() ? 1 : 0,
+	  		id = $(this).attr('id');
+	  		
+	  	var data = {id:id};
+	  		data[name] = value;
+
+        Craft.postActionRequest('v12Finance/updateProduct', data, function(response) {
+          if (response)
+          {
+            Craft.cp.displayNotice(Craft.t('Finance option updated.'));
+          }
+        });
+      })
+    });
+
+{% endjs %}

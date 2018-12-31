@@ -10,9 +10,13 @@
 
 namespace kuriousagency\commerce\v12finance;
 
-use kuriousagency\commerce\v12finance\services\V12financeService as V12financeService;
+use kuriousagency\commerce\v12finance\services\ProductsService as ProductsService;
 use kuriousagency\commerce\v12finance\variables\V12financeVariable;
 use kuriousagency\commerce\v12finance\models\Settings;
+
+use kuriousagency\commerce\v12finance\gateways\Gateway;
+use craft\commerce\services\Gateways;
+use craft\events\RegisterComponentTypesEvent;
 
 use Craft;
 use craft\base\Plugin;
@@ -28,8 +32,7 @@ use yii\base\Event;
  * Class V12finance
  *
  * @author    Kurious Agency
- * @package   CommerceV12finance
- * @since     1.0.0
+ * @package   2.0.0
  *
  * @property  V12financeService $V12financeService
  */
@@ -49,7 +52,9 @@ class V12finance extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '1.0.0';
+	public $schemaVersion = '1.0.0';
+	
+	public $apiUrl = 'https://apply.v12finance.com/latest/retailerapi/';
 
     // Public Methods
     // =========================================================================
@@ -60,13 +65,21 @@ class V12finance extends Plugin
     public function init()
     {
         parent::init();
-        self::$plugin = $this;
+		self::$plugin = $this;
+
+		$this->setComponents([
+            'products' => ProductsService::class,
+        ]);
+		
+		Event::on(Gateways::class, Gateways::EVENT_REGISTER_GATEWAY_TYPES,  function(RegisterComponentTypesEvent $event) {
+            $event->types[] = Gateway::class;
+        });
 
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['siteActionTrigger1'] = 'v12-finance/default';
+				//$event->rules['v12finance/response'] = 'v12finance/products/index';
             }
         );
 
@@ -74,7 +87,7 @@ class V12finance extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['cpActionTrigger1'] = 'v12-finance/default/do-something';
+                //$event->rules['v12finance'] = 'v12finance/products/index';
             }
         );
 
@@ -84,7 +97,7 @@ class V12finance extends Plugin
             function (Event $event) {
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
-                $variable->set('V12finance', V12financeVariable::class);
+                $variable->set('v12finance', V12financeVariable::class);
             }
         );
 
@@ -105,7 +118,17 @@ class V12finance extends Plugin
         //     ),
         //     __METHOD__
         // );
-    }
+	}
+	
+	// public function getCpNavItem()
+    // {
+    //     $parent = parent::getCpNavItem();
+    //     // Allow user to override plugin name in sidebar
+	// 	$parent['label'] = 'V12 Finance';
+	// 	$parent['url'] = 'v12finance';
+        
+    //     return $parent;
+    // }
 
     // Protected Methods
     // =========================================================================
@@ -113,21 +136,21 @@ class V12finance extends Plugin
     /**
      * @inheritdoc
      */
-    protected function createSettingsModel()
-    {
-        return new Settings();
-    }
+    // protected function createSettingsModel()
+    // {
+    //     return new Settings();
+    // }
 
-    /**
-     * @inheritdoc
-     */
-    protected function settingsHtml(): string
-    {
-        return Craft::$app->view->renderTemplate(
-            'commerce-v12finance/settings',
-            [
-                'settings' => $this->getSettings()
-            ]
-        );
-    }
+    // /**
+    //  * @inheritdoc
+    //  */
+    // protected function settingsHtml(): string
+    // {
+    //     return Craft::$app->view->renderTemplate(
+    //         'v12finance/settings',
+    //         [
+    //             'settings' => $this->getSettings()
+    //         ]
+    //     );
+    // }
 }
