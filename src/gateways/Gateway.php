@@ -42,7 +42,7 @@ use craft\db\Command;
 use yii\base\Exception;
 use yii\base\NotSupportedException;
 use kuriousagency\commerce\v12finance\V12finance;
-use kuriousagency\commerce\v12finance\models\v12financePaymentForm;
+use kuriousagency\commerce\v12finance\models\V12financePaymentForm;
 use kuriousagency\commerce\v12finance\responses\PaymentResponse;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
