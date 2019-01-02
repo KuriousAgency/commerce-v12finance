@@ -389,6 +389,10 @@ class Gateway extends BaseGateway
 				$data['Status'] = 'Declined';
 				$data['message'] = 'Your application has been declined.';
 				break;
+			case 'C':
+				$data['Status'] = 'Cancelled';
+				$data['message'] = 'Your application has been cancelled.';
+				break;
 		}
 
 		$response = new PaymentResponse((object)$data);
