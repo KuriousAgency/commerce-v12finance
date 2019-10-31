@@ -17,6 +17,8 @@ use kuriousagency\commerce\v12finance\models\Settings;
 use kuriousagency\commerce\v12finance\gateways\Gateway;
 use craft\commerce\services\Gateways;
 use craft\events\RegisterComponentTypesEvent;
+use craft\commerce\events\ProcessPaymentEvent;
+use craft\commerce\services\Payments;
 
 use Craft;
 use craft\base\Plugin;
@@ -108,7 +110,23 @@ class V12finance extends Plugin
                 if ($event->plugin === $this) {
                 }
             }
-        );
+		);
+		
+		Event::on(
+			Payments::class,
+			Payments::EVENT_AFTER_PROCESS_PAYMENT,
+			function(ProcessPaymentEvent $e) {
+
+				$transaction = $e->transaction;
+
+				if($transaction->getGateway()->handle == "v12Finance") {
+					$order = $e->order;
+					$order->markAsComplete();
+				}
+			}
+		);
+
+
 
         // Craft::info(
         //     Craft::t(
