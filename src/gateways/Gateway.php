@@ -354,7 +354,7 @@ class Gateway extends BaseGateway
 		//Craft::dd($response->isSuccessful());
 
 		if ($response->isSuccessful()) {
-			$response->setProcessing(true);
+			// $response->setProcessing(true);
 			$response->setRedirectUrl($applicationResponse->ApplicationFormUrl);
 		}
 

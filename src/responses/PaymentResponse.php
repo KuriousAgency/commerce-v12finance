@@ -45,10 +45,11 @@ class PaymentResponse implements RequestResponseInterface
      */
     public function isSuccessful(): bool
     {
-		//return count($this->data['Errors']) == 0;
-		return $this->data->Status === 'Success';
-		//return is_bool($this->data->Status) ? $this->data->Status : $this->data->Status === 'Success';
-		//return array_key_exists('status', $this->data) && $this->data['status'] === 'Success';
+		if(($this->isRedirect() == false) && ($this->data->Status === 'Success'))  {
+			return true;
+		}
+
+		return false;
     }
     /**
      * @inheritdoc
