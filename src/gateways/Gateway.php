@@ -550,6 +550,30 @@ class Gateway extends BaseGateway
 	public function subscribe(User $user, BasePlan $plan, SubscriptionForm $parameters): SubscriptionResponseInterface
     {
 	}
+
+	/**
+     * @inheritdoc
+     */
+    public function getHasBillingIssues(Subscription $subscription): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBillingIssueDescription(Subscription $subscription): string
+    {
+		return '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBillingIssueResolveFormHtml(Subscription $subscription): string
+    {
+        throw new NotSupportedException();
+    }
 	
 
 
