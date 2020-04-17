@@ -2,7 +2,7 @@
 	"name": "kuriousagency/commerce-v12finance",
 	"description": "V12 Finance plugin for Craft Commerce",
 	"type": "craft-plugin",
-	"version": "2.0.5",
+	"version": "2.0.6",
 	"keywords": [
 		"craft",
 		"cms",

@@ -45,7 +45,7 @@ class PaymentResponse implements RequestResponseInterface
      */
     public function isSuccessful(): bool
     {
-		if(($this->isRedirect() == false) && ($this->data->Status === 'Success'))  {
+		if(($this->isRedirect() == false) && ($this->transactionValue('Status') === 'Success'))  {
 			return true;
 		}
 
@@ -77,7 +77,7 @@ class PaymentResponse implements RequestResponseInterface
      */
     public function getRedirectData(): array
     {
-        return [];
+        return $this->data;
     }
     /**
      * @inheritdoc
@@ -91,7 +91,9 @@ class PaymentResponse implements RequestResponseInterface
      */
     public function getTransactionReference(): string
     {
-        if (empty($this->data)) {
+		return $this->transactionValue('ApplicationId');
+
+		if (empty($this->data)) {
             return '';
         }
         return (string)$this->data->ApplicationId;
@@ -101,6 +103,8 @@ class PaymentResponse implements RequestResponseInterface
      */
     public function getCode(): string
     {
+		return $this->transactionValue('code');
+
         if (empty($this->data->code)) {
             return '';
         }
@@ -118,6 +122,8 @@ class PaymentResponse implements RequestResponseInterface
      */
     public function getMessage(): string
     {
+		return $this->transactionValue('message');
+
         if (empty($this->data->message)) {
             return '';
         }
@@ -129,5 +135,14 @@ class PaymentResponse implements RequestResponseInterface
     public function redirect()
     {
         throw new NotImplementedException('Redirecting directly is not implemented for this gateway.');
-    }
+	}
+	
+	private function transactionValue($key)
+	{
+		if (isset($this->data[$key])) {
+			return $this->data[$key];
+		}
+
+		return '';
+	}
 }

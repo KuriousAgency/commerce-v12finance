@@ -112,7 +112,7 @@ class V12finance extends Plugin
             }
 		);
 		
-		Event::on(
+		/*Event::on(
 			Payments::class,
 			Payments::EVENT_AFTER_PROCESS_PAYMENT,
 			function(ProcessPaymentEvent $e) {
@@ -124,7 +124,7 @@ class V12finance extends Plugin
 					$order->markAsComplete();
 				}
 			}
-		);
+		);*/
 
 
 

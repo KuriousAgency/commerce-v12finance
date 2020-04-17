@@ -10,7 +10,35 @@
 
 namespace kuriousagency\commerce\v12finance\gateways;
 
+use kuriousagency\commerce\v12finance\V12finance;
+use kuriousagency\commerce\v12finance\models\V12financePaymentForm;
+use kuriousagency\commerce\v12finance\responses\PaymentResponse;
+
 use Craft;
+use craft\commerce\Plugin as Commerce;
+use craft\commerce\base\Gateway as BaseGateway;
+use craft\commerce\base\RequestResponseInterface;
+use craft\commerce\errors\PaymentException;
+use craft\commerce\errors\TransactionException;
+use craft\commerce\errors\PaymentSourceException;
+use craft\commerce\models\Currency;
+use craft\commerce\models\payments\BasePaymentForm;
+use craft\commerce\models\PaymentSource;
+use craft\commerce\models\Transaction;
+use craft\commerce\records\Transaction as TransactionRecord;
+use craft\helpers\UrlHelper;
+use craft\helpers\DateTimeHelper;
+use craft\helpers\Json;
+use craft\helpers\StringHelper;
+use craft\web\Response as WebResponse;
+use craft\web\View;
+use craft\db\Query;
+use craft\db\Command;
+use yii\base\Exception;
+use yii\base\NotSupportedException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
+/*
 use craft\commerce\base\Plan as BasePlan;
 use craft\commerce\base\PlanInterface;
 use craft\commerce\base\RequestResponseInterface;
@@ -41,12 +69,9 @@ use craft\db\Query;
 use craft\db\Command;
 use yii\base\Exception;
 use yii\base\NotSupportedException;
-use kuriousagency\commerce\v12finance\V12finance;
-use kuriousagency\commerce\v12finance\models\V12financePaymentForm;
-use kuriousagency\commerce\v12finance\responses\PaymentResponse;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
-
+*/
 
 /**
  * Gateway represents v12finance gateway
@@ -117,15 +142,15 @@ class Gateway extends BaseGateway
     /**
      * @inheritdoc
      */
-    // public function populateRequest(array &$request, BasePaymentForm $paymentForm = null)
-    // {
+    public function populateRequest(array &$request, BasePaymentForm $paymentForm = null)
+    {
 	// 	parent::populateRequest($request, $paymentForm);
 
 	// 	$request['ProductId'] = $paymentForm->ProductId;
 	// 	$request['ProductGuid'] = $paymentForm->ProductGuid;
 	// 	$request['Deposit'] = $paymentForm->Deposit;
 	// 	//Craft::dd($request);
-	// }
+	}
 
     // Protected Methods
     // =========================================================================
@@ -346,14 +371,15 @@ class Gateway extends BaseGateway
 			$applicationResponse->message = $applicationResponse->Errors[0]->Description;
 			$applicationResponse->code = $applicationResponse->Errors[0]->Code;
 		} else {
-			$applicationResponse->Status = 'Success';
+			//$applicationResponse->Status = 'Success';
 		}
 
-		$response = new PaymentResponse($applicationResponse);
+		$response = new PaymentResponse((array) $applicationResponse);
+		//$response->setProcessing(true);
 
 		//Craft::dd($response->isSuccessful());
 
-		if ($response->isSuccessful()) {
+		if (!count($applicationResponse->Errors)) {
 			// $response->setProcessing(true);
 			$response->setRedirectUrl($applicationResponse->ApplicationFormUrl);
 		}
@@ -395,7 +421,10 @@ class Gateway extends BaseGateway
 				break;
 		}
 
-		$response = new PaymentResponse((object)$data);
+		$childTransaction = Commerce::getInstance()->getTransactions()->createTransaction(null, $transaction);
+		$childTransaction->type = $transaction->type;
+
+		$response = new PaymentResponse($data);
 
 		if ($request->getParam('Status') == 'R') {
 			$response->setProcessing(true);
