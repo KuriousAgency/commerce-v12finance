@@ -229,7 +229,7 @@ class Gateway extends BaseGateway
 
 		foreach ($this->getAllProducts() as $product)
 		{
-			if (($saleItems && $product->saleItems) || $product->enabled) {
+			if (($saleItems && $product->saleItems) || (!$saleItems && $product->enabled)) {
 				$products[] = $product;
 			}
 		}
