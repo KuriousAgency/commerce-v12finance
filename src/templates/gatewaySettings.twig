@@ -13,41 +13,44 @@
  */
 #}
 
-{% from "_includes/forms" import textField, lightswitchField %}
+{% from "_includes/forms" import autosuggestField, lightswitchField %}
 
-{{ textField({
-    label: 'Auth Key'|t('commerce'),
-    id: 'authKey',
-    class: 'ltr',
-    name: 'authKey',
-    value: gateway.authKey,
-    errors: gateway.getErrors('authKey')
+{{ autosuggestField({
+	label: 'Auth Key'|t('commerce'),
+	id: 'authKey',
+	class: 'ltr',
+	name: 'authKey',
+	value: gateway.authKey,
+	errors: gateway.getErrors('authKey'),
+	suggestEnvVars: true,
 }) }}
 
-{{ textField({
-    label: 'Retailer GUID'|t('commerce'),
-    id: 'retailerGuid',
-    class: 'ltr',
-    name: 'retailerGuid',
-    value: gateway.retailerGuid,
-    errors: gateway.getErrors('retailerGuid')
+{{ autosuggestField({
+	label: 'Retailer GUID'|t('commerce'),
+	id: 'retailerGuid',
+	class: 'ltr',
+	name: 'retailerGuid',
+	value: gateway.retailerGuid,
+	errors: gateway.getErrors('retailerGuid'),
+	suggestEnvVars: true,
 }) }}
 
-{{ textField({
-    label: 'Retailer ID'|t('commerce'),
-    id: 'retailerId',
-    class: 'ltr',
-    name: 'retailerId',
-    value: gateway.retailerId,
-    errors: gateway.getErrors('retailerId')
+{{ autosuggestField({
+	label: 'Retailer ID'|t('commerce'),
+	id: 'retailerId',
+	class: 'ltr',
+	name: 'retailerId',
+	value: gateway.retailerId,
+	errors: gateway.getErrors('retailerId'),
+	suggestEnvVars: true,
 }) }}
 
 
  {{ lightswitchField({
-     label: "Test mode?"|t('commerce'),
-     name: 'testMode',
-     on: gateway.testMode,
-     errors: gateway.getErrors('testMode'),
+	 label: "Test mode?"|t('commerce'),
+	 name: 'testMode',
+	 on: gateway.testMode,
+	 errors: gateway.getErrors('testMode'),
  }) }}
 
 <hr>
