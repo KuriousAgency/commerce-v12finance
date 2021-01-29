@@ -256,13 +256,16 @@ class Gateway extends BaseGateway
 	{
 		$products = [];
 
-		foreach ($this->getFinanceProducts() as $product) {
-			$product->enabled = $this->data
-				? $this->data[$product->ProductId]['enabled']
-				: false;
-			$product->saleItems = $this->data
-				? $this->data[$product->ProductId]['saleItems']
-				: false;
+		foreach ($this->getFinanceProducts() as $product)
+		{
+			if (isset($this->data[$product->ProductId])) {
+				$product->enabled = $this->data[$product->ProductId]['enabled'];
+				$product->saleItems = $this->data[$product->ProductId]['saleItems'];
+			} else {
+				$product->enabled = false;
+				$product->saleItems = false;
+			}
+			
 			$products[] = $product;
 		}
 
